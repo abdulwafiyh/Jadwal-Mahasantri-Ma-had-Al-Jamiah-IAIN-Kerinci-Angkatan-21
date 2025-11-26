@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Mahasantri Ma'had XXI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons 6.4.0 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts: Plus Jakarta Sans (Modern Font) -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+        }
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .glass-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            position: relative;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+
+        /* Card Hover Effect */
+        .schedule-card { transition: all 0.2s ease; }
+        .schedule-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+    </style>
+    
+    <!-- Script untuk cek tema awal -->
+    <script>
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
+</head>
+<body class="pb-16 min-h-screen transition-colors duration-300 bg-[#f0fdf4] dark:bg-slate-900 text-slate-800 dark:text-slate-100 bg-[radial-gradient(#dcfce7_1px,transparent_1px)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px]">
+
+    <!-- Hero Header -->
+    <header class="glass-header text-white pb-12 pt-10 rounded-b-[2.5rem] shadow-xl relative overflow-hidden">
+        <!-- Theme Toggle Button -->
+        <button onclick="toggleTheme()" class="absolute top-6 right-6 z-30 bg-white/20 hover:bg-white/30 active:scale-95 text-white p-3 rounded-full backdrop-blur-md transition-all shadow-lg border border-white/20 group">
+            <i class="fas fa-moon text-xl group-hover:rotate-12 transition-transform" id="themeIcon"></i>
+        </button>
+
+        <!-- Decorative Background Blobs -->
+        <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 -ml-16 -mb-10 w-40 h-40 bg-emerald-300 opacity-20 rounded-full blur-2xl"></div>
+        
+        <div class="relative z-10 container mx-auto px-6 text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl backdrop-blur-md mb-5 border border-white/20 shadow-lg">
+                <i class="fas fa-mosque text-3xl text-emerald-50"></i>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight mb-2 leading-tight">JADWAL MAHASANTRI</h1>
+            <div class="flex items-center justify-center gap-2 text-emerald-100 text-sm md:text-base font-medium opacity-90">
+                <span class="bg-white/10 px-3 py-1 rounded-full border border-white/10">Angkatan XXI</span>
+                <span>•</span>
+                <span>Ma'had IAIN Kerinci</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-2xl mx-auto px-4 -mt-10 relative z-20">
+        
+        <!-- Search & Control Panel -->
+        <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl rounded-2xl shadow-xl border border-white/60 dark:border-slate-700 p-4 mb-6 ring-1 ring-black/5 dark:ring-white/5 transition-colors duration-300">
+            <!-- Search Input -->
+            <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-magnifying-glass text-emerald-400 group-focus-within:text-emerald-600 transition-colors"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="searchInput"
+                    placeholder="Cari nama santri..." 
+                    class="w-full pl-11 pr-10 py-3.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 font-medium shadow-sm"
+                    onkeyup="handleSearch()"
+                >
+                <button onclick="clearSearch()" id="clearBtn" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-red-500 transition-colors hidden cursor-pointer">
+                    <i class="fas fa-circle-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modern Tabs Switcher -->
+            <div class="flex p-1.5 mt-4 bg-slate-100 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 relative transition-colors duration-300">
+                <button onclick="switchTab('daily')" id="btn-daily" class="flex-1 relative z-10 py-2.5 text-sm font-bold rounded-lg transition-all duration-300 shadow-sm bg-white dark:bg-slate-700 text-emerald-700 dark:text-emerald-400 flex items-center justify-center gap-2 ring-1 ring-black/5 dark:ring-white/5">
+                    <i class="fas fa-sun"></i> Harian
+                </button>
+                <button onclick="switchTab('yasinan')" id="btn-yasinan" class="flex-1 relative z-10 py-2.5 text-sm font-semibold rounded-lg transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2">
+                    <i class="fas fa-moon"></i> Yasinan
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div id="content-container" class="space-y-4 min-h-[300px]">
+            <!-- Dynamic Content -->
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-16 mb-8 text-center relative z-50">
+            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">Dibuat dengan <i class="fas fa-heart text-red-400 mx-1 animate-pulse"></i> untuk Angkatan XXI</p>
+            
+            <div class="flex flex-col items-center gap-1">
+                <div class="inline-flex gap-6 text-slate-300 dark:text-slate-600 mb-1">
+                    <a href="https://github.com/abdulwafiyh" target="_blank" class="p-2 hover:text-slate-600 dark:hover:text-slate-300 transition-colors transform hover:scale-110 cursor-pointer">
+                        <i class="fab fa-github text-2xl"></i>
+                    </a>
+                    <a href="https://instagram.com/abdulwafiyh" target="_blank" class="p-2 hover:text-pink-500 transition-colors transform hover:scale-110 cursor-pointer">
+                        <i class="fab fa-instagram text-2xl"></i>
+                    </a>
+                </div>
+                <p class="text-xs text-slate-400 dark:text-slate-500 font-medium tracking-wide"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA JADWAL ---
+        const dailySchedule = [
+            { day: 'Minggu', time: 'Magrib', adzan: 'Ahmad Ghalib', wirid: 'Dani Ikwal', doa: 'Fadil Maulana' },
+            { day: 'Minggu', time: 'Isya', adzan: 'Gevi Saputra', wirid: 'M. Dian Pratama', doa: 'M. Taufiq' },
+            { day: 'Senin', time: 'Subuh', adzan: 'Randi Aldiansyah', wirid: 'M. Zepan', doa: 'Fajran Alfarizi' },
+            { day: 'Senin', time: 'Magrib', adzan: 'Najwan Afriandi', wirid: 'Asyraf', doa: 'Gusrian Juliansyah' },
+            { day: 'Senin', time: 'Isya', adzan: 'M. Ikhwan Saputra', wirid: 'Aldo Refiawan', doa: 'Agung Saputra' },
+            { day: 'Selasa', time: 'Subuh', adzan: 'Mhd. Alaigi Fismadani P.', wirid: 'Fazli Alfajri', doa: 'Danurifa Mubariq' },
+            { day: 'Selasa', time: 'Magrib', adzan: 'Fajrul Anshar', wirid: 'M. Zakhhy Ariatama', doa: 'Darel Agustian' },
+            { day: 'Selasa', time: 'Isya', adzan: 'Rio Fajrian', wirid: 'Zikrul Hadi', doa: 'M. Paizul Hafiz' },
+            { day: 'Rabu', time: 'Subuh', adzan: 'Raikal Danelo Haravis', wirid: 'Habil Jumbri Valan', doa: 'Mhd. Habban Zahid' },
+            { day: 'Rabu', time: 'Magrib', adzan: 'Fairuz Difa Febrian', wirid: 'Mhd. Jofri Multazam', doa: 'Rangga Nugraha Asnel' },
+            { day: 'Rabu', time: 'Isya', adzan: 'Rezon Wandi', wirid: 'Mhd. Al Abil', doa: 'Fikri Hidayat' },
+            { day: 'Kamis', time: 'Subuh', adzan: 'Aditya Marvel', wirid: 'Arqom Al-Ghifari', doa: 'Zaim Muhdamar' },
+            { day: 'Kamis', time: 'Magrib', adzan: 'M. Nabil Gibran', wirid: 'Al-Hamid', doa: 'Veru Refil Harlianda' },
+            { day: 'Kamis', time: 'Isya', adzan: 'Ochta Ramadhanil', wirid: 'Geo Gusti Randa', doa: 'M. Farel' },
+            { day: 'Jumat', time: 'Subuh', adzan: 'Iftahul Zaki', wirid: 'Prisma Asyrafa S.', doa: 'Raka Adzi Refka' },
+            { day: 'Jumat', time: 'Magrib', adzan: 'Nabil Wafi D', wirid: 'Fahri Candra W', doa: 'Rafino Deres' },
+            { day: 'Jumat', time: 'Isya', adzan: 'M. Damar O', wirid: 'Zaki Pebrian', doa: 'Mhd. Radid Al Zahri' },
+            { day: 'Sabtu', time: 'Subuh', adzan: 'Abd. Wafi Hermansyah', wirid: 'M. Ikram Fajri', doa: 'Hengki Krisna Mufti' },
+        ];
+
+        const yasinanSchedule = [
+            { no: 1, date: '5 Des 2025', imam: 'Ahmad Ghalib', tahlil: 'Dani Ikwal', doa: 'Fadil Maulana' },
+            { no: 2, date: '12 Des 2025', imam: 'Gevi Saputra', tahlil: 'M. Dian Pratama', doa: 'M. Taufiq' },
+            { no: 3, date: '19 Des 2025', imam: 'Randi Aldiansyah', tahlil: 'M. Zepan', doa: 'Fajran Alfarizi' },
+            { no: 4, date: '26 Des 2025', imam: 'Najwan Afriandi', tahlil: 'Asyraf', doa: 'Gusrian Juliansyah' },
+            { no: 5, date: '2 Jan 2026', imam: 'M. Ikhwan Saputra', tahlil: 'Aldo Refiawan', doa: 'Agung Saputra' },
+            { no: 6, date: '9 Jan 2026', imam: 'Mhd. Alaigi Fismadani', tahlil: 'Fazli Alfajri', doa: 'Danurifa Mubariq' },
+            { no: 7, date: '16 Jan 2026', imam: 'Fajrul Anshar', tahlil: 'M. Zakhhy Ariatama', doa: 'Darel Agustian' },
+            { no: 8, date: '23 Jan 2026', imam: 'Rio Fajrian', tahlil: 'Zikrul Hadi', doa: 'M. Paizul Hafiz' },
+            { no: 9, date: '30 Jan 2026', imam: 'Raikal Danelo Haravis', tahlil: 'Habil Jumbri Valan', doa: 'Mhd. Habban Zahid' },
+            { no: 10, date: '6 Feb 2026', imam: 'Fairuz Difa Febrian', tahlil: 'Mhd Jofri Multazam', doa: 'Rangga Nugraha' },
+            { no: 11, date: '13 Feb 2026', imam: 'Rezon Wandi', tahlil: 'Mhd. Al Abil', doa: 'Fikri Hidayat' },
+            { no: 12, date: '20 Feb 2026', imam: 'Aditya Marvel', tahlil: 'Arqom Al-Ghifari', doa: 'Zaim Muhdamar' },
+            { no: 13, date: '27 Feb 2026', imam: 'M. Nabil Gibran', tahlil: 'Al-Hamid', doa: 'Veru Refil Harlianda' },
+            { no: 14, date: '6 Mar 2026', imam: 'Ochta Ramadhanil', tahlil: 'Geo Gusti Randa', doa: 'M. Farel' },
+            { no: 15, date: '13 Mar 2026', imam: 'Iftahul Zaki', tahlil: 'Prisma Asyrafa S', doa: 'Raka Adzi Refka' },
+            { no: 16, date: '20 Mar 2026', imam: 'Nabil Wafi D', tahlil: 'Fahri Candra W', doa: 'Rafino Deres' },
+            { no: 17, date: '27 Mar 2026', imam: 'M. Damar O', tahlil: 'Zaki Pebrian', doa: 'Mhd. Radid Al Zahri' },
+            { no: 18, date: '3 Apr 2026', imam: 'Abd. Wafi Hermansyah', tahlil: 'M. Ikram Fajri', doa: 'Hengki Krisna Mufti' },
+            { no: 19, date: '10 Apr 2026', imam: 'Mhd Fajri Multazam', tahlil: 'Zaky Pujangga', doa: 'Aulia Rahman' },
+            { no: 20, date: '17 Apr 2026', imam: 'Alghifari Fathur Ahmad', tahlil: 'Ahmad Ghalib', doa: 'Dani Ikwal' },
+            { no: 21, date: '24 Apr 2026', imam: 'Fadil Maulana', tahlil: 'Gevi Saputra', doa: 'M. Dian Pratama' },
+            { no: 22, date: '1 Mei 2026', imam: 'M. Taufiq', tahlil: 'Randi Aldiansyah', doa: 'M. Zepan' },
+            { no: 23, date: '8 Mei 2026', imam: 'Fajran Alfarizi', tahlil: 'Najwan Afriandi', doa: 'Asyraf' },
+            { no: 24, date: '15 Mei 2026', imam: 'Gusrian Juliansyah', tahlil: 'M. Ikhwan Saputra', doa: 'Aldo Refiawan' },
+            { no: 25, date: '22 Mei 2026', imam: 'Agung Saputra', tahlil: 'Mhd. Alaigi F.P.', doa: 'Fazli Alfajri' },
+            { no: 26, date: '29 Mei 2026', imam: 'Danurifa Mubariq', tahlil: 'Fajrul Anshar', doa: 'M. Zakhhy Ariatama' },
+            { no: 27, date: '5 Jun 2026', imam: 'Darel Agustian', tahlil: 'Rio Fajrian', doa: 'Zikrul Hadi' },
+            { no: 28, date: '12 Jun 2026', imam: 'M. Paizul Hafiz', tahlil: 'Raikal Danelo', doa: 'Habil Jumbri' },
+            { no: 29, date: '19 Jun 2026', imam: 'Mhd. Habban Zahid', tahlil: 'Fairuz Difa', doa: 'Mhd Jofri Multazam' },
+            { no: 30, date: '26 Jun 2026', imam: 'Rangga Nugraha', tahlil: 'Rezon Wandi', doa: 'Mhd. Al Abil' },
+            { no: 31, date: '3 Jul 2026', imam: 'Fikri Hidayat', tahlil: 'Aditya Marvel', doa: 'Arqom Al-Ghifari' },
+            { no: 32, date: '10 Jul 2026', imam: 'Zaim Muhdamar', tahlil: 'M. Nabil Gibran', doa: 'Al-Hamid' },
+            { no: 33, date: '17 Jul 2026', imam: 'Veru Refil Harlianda', tahlil: 'Ochta Ramadhanil', doa: 'Geo Gusti Randa' },
+            { no: 34, date: '24 Jul 2026', imam: 'M. Farel', tahlil: 'Iftahul Zaki', doa: 'Prisma Asyrafa S' },
+            { no: 35, date: '31 Jul 2026', imam: 'Raka Adzi Refka', tahlil: 'Nabil Wafi D', doa: 'Fahri Candra W' },
+        ];
+
+        let activeTab = 'daily';
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const currentDay = days[new Date().getDay()];
+
+        // --- DARK MODE LOGIC ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.theme = 'light';
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                html.classList.add('dark');
+                localStorage.theme = 'dark';
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+        
+        window.addEventListener('load', () => {
+            const icon = document.getElementById('themeIcon');
+            if (document.documentElement.classList.contains('dark')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        });
+
+        // --- HELPER DATE UNTUK YASINAN ---
+        function checkIsYasinanToday(dateString) {
+            // Mapping bulan Indonesia ke angka (0-11)
+            const months = {
+                'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'Mei': 4, 'Jun': 5,
+                'Jul': 6, 'Agu': 7, 'Sep': 8, 'Okt': 9, 'Nov': 10, 'Des': 11
+            };
+            
+            const parts = dateString.split(' '); // Contoh: ["5", "Des", "2025"]
+            if(parts.length !== 3) return false;
+            
+            const day = parseInt(parts[0]);
+            const month = months[parts[1]];
+            const year = parseInt(parts[2]);
+            
+            const today = new Date();
+            
+            // Cek apakah tanggal, bulan, dan tahun sama persis
+            return today.getDate() === day &&
+                   today.getMonth() === month &&
+                   today.getFullYear() === year;
+        }
+
+        // Helper untuk warna waktu sholat
+        function getTimeColor(time) {
+            const t = time.toLowerCase();
+            if(t.includes('subuh')) return 'bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800';
+            if(t.includes('magrib')) return 'bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800';
+            if(t.includes('isya')) return 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800';
+            return 'bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700';
+        }
+
+        function getTimeBadge(time) {
+            const t = time.toLowerCase();
+            let colorClass = 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300';
+            if(t.includes('subuh')) colorClass = 'bg-sky-100 dark:bg-sky-900/50 text-sky-800 dark:text-sky-200';
+            if(t.includes('magrib')) colorClass = 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-200';
+            if(t.includes('isya')) colorClass = 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-800 dark:text-indigo-200';
+            
+            return `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${colorClass}">${time}</span>`;
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function renderDaily(data) {
+            if (data.length === 0) return `
+                <div class="text-center py-16 px-6">
+                    <div class="inline-flex bg-slate-100 dark:bg-slate-800 p-4 rounded-full mb-4 text-slate-400 dark:text-slate-500">
+                        <i class="fas fa-search text-2xl"></i>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium">Santri dengan nama tersebut tidak ditemukan.</p>
+                </div>`;
+            
+            return data.map(item => {
+                const isToday = item.day === currentDay;
+                const timeColorClass = getTimeColor(item.time);
+                // Dark mode friendly borders and shadows
+                const borderClass = isToday 
+                    ? 'border-emerald-500 shadow-md ring-1 ring-emerald-500/20 dark:ring-emerald-400/20' 
+                    : 'border-slate-100 dark:border-slate-700 hover:border-emerald-200 dark:hover:border-emerald-800';
+                const cardId = isToday ? 'id="today-card"' : '';
+                
+                return `
+                <div ${cardId} class="schedule-card bg-white dark:bg-slate-800 rounded-2xl p-5 mb-4 border-l-[6px] ${borderClass} shadow-sm relative overflow-hidden group">
+                    ${isToday ? `
+                    <div class="absolute right-0 top-0">
+                        <span class="bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm flex items-center gap-1">
+                            <i class="fas fa-bolt animate-pulse text-yellow-300"></i> HARI INI
+                        </span>
+                    </div>` : ''}
+                    
+                    <div class="flex items-center justify-between mb-4 mt-1">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-slate-100 dark:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold uppercase text-slate-600 dark:text-slate-300 tracking-wide border border-slate-200 dark:border-slate-600">
+                                ${item.day}
+                            </div>
+                            <span class="text-slate-300 dark:text-slate-600">|</span>
+                            ${getTimeBadge(item.time)}
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-100 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 shadow-sm mt-1">
+                            <i class="fas fa-microphone-alt text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Muadzin</p>
+                            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 leading-tight">${item.adzan}</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3 pt-3 border-t border-dashed border-slate-100 dark:border-slate-700">
+                        <div class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="fas fa-book-open text-slate-400 dark:text-slate-500 text-xs"></i>
+                                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Wirid</span>
+                            </div>
+                            <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate">${item.wirid}</p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="fas fa-hands-praying text-slate-400 dark:text-slate-500 text-xs"></i>
+                                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Doa Setelah Wirid</span>
+                            </div>
+                            <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate">${item.doa}</p>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderYasinan(data) {
+            if (data.length === 0) return `
+                <div class="text-center py-16 px-6">
+                    <div class="inline-flex bg-slate-100 dark:bg-slate-800 p-4 rounded-full mb-4 text-slate-400 dark:text-slate-500">
+                        <i class="fas fa-search text-2xl"></i>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium">Tidak ada jadwal Yasinan untuk nama ini.</p>
+                </div>`;
+
+            return data.map(item => {
+                const isToday = checkIsYasinanToday(item.date);
+                const borderClass = isToday 
+                    ? 'border-emerald-500 shadow-md ring-1 ring-emerald-500/20 dark:ring-emerald-400/20' 
+                    : 'border-slate-100 dark:border-slate-700 hover:shadow-md';
+                const cardId = isToday ? 'id="today-yasinan-card"' : '';
+
+                return `
+                <div ${cardId} class="schedule-card bg-white dark:bg-slate-800 rounded-2xl p-0 mb-4 shadow-sm border ${borderClass} overflow-hidden transition-shadow relative">
+                    ${isToday ? `
+                    <div class="absolute right-0 top-0 z-10">
+                        <span class="bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm flex items-center gap-1">
+                            <i class="fas fa-bolt animate-pulse text-yellow-300"></i> HARI INI
+                        </span>
+                    </div>` : ''}
+
+                    <div class="bg-amber-50 dark:bg-amber-900/20 p-4 flex justify-between items-center border-b border-amber-100/50 dark:border-amber-800/30">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-white dark:bg-slate-700 p-2 rounded-lg shadow-sm border border-amber-100 dark:border-slate-600 text-center min-w-[50px]">
+                                <span class="block text-[10px] text-slate-400 dark:text-slate-400 font-bold uppercase">MINGGU</span>
+                                <span class="block text-lg font-bold text-amber-600 dark:text-amber-400 leading-none">${item.no}</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mb-0.5">Tanggal Pelaksanaan</p>
+                                <p class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                                    <i class="far fa-calendar-alt text-amber-500 dark:text-amber-400"></i> ${item.date}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-5">
+                        <div class="mb-4 relative pl-4 border-l-2 border-emerald-200 dark:border-emerald-700">
+                            <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase mb-1">Imam Yasinan</p>
+                            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">${item.imam}</h3>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-700/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
+                                <span class="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-2"><i class="fas fa-users w-4"></i> Tahlil</span>
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-200 text-right">${item.tahlil}</span>
+                            </div>
+                            <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-700/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
+                                <span class="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-2"><i class="fas fa-hands w-4"></i> Doa Penutup</span>
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-200 text-right">${item.doa}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        // --- LOGIC UTAMA ---
+        function switchTab(tab) {
+            activeTab = tab;
+            const btnDaily = document.getElementById('btn-daily');
+            const btnYasinan = document.getElementById('btn-yasinan');
+            
+            // Re-apply Tailwind classes based on active state and dark mode
+            if (tab === 'daily') {
+                btnDaily.className = 'flex-1 relative z-10 py-2.5 text-sm font-bold rounded-lg transition-all duration-300 shadow-sm bg-white dark:bg-slate-700 text-emerald-700 dark:text-emerald-400 flex items-center justify-center gap-2 ring-1 ring-black/5 dark:ring-white/5';
+                btnYasinan.className = 'flex-1 relative z-10 py-2.5 text-sm font-semibold rounded-lg transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2';
+            } else {
+                btnDaily.className = 'flex-1 relative z-10 py-2.5 text-sm font-semibold rounded-lg transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2';
+                btnYasinan.className = 'flex-1 relative z-10 py-2.5 text-sm font-bold rounded-lg transition-all duration-300 shadow-sm bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 flex items-center justify-center gap-2 ring-1 ring-black/5 dark:ring-white/5';
+            }
+            updateContent();
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value;
+            const clearBtn = document.getElementById('clearBtn');
+            clearBtn.classList.toggle('hidden', !query);
+            updateContent();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            handleSearch();
+        }
+
+        function updateContent() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const container = document.getElementById('content-container');
+            
+            container.classList.remove('fade-in');
+            void container.offsetWidth; 
+            container.classList.add('fade-in');
+
+            if (activeTab === 'daily') {
+                const filtered = dailySchedule.filter(item => 
+                    item.adzan.toLowerCase().includes(query) ||
+                    item.wirid.toLowerCase().includes(query) ||
+                    item.doa.toLowerCase().includes(query) ||
+                    item.day.toLowerCase().includes(query)
+                );
+                
+                let infoHtml = '';
+                if (!query) {
+                    infoHtml = `<div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 text-blue-800 dark:text-blue-300 p-4 rounded-2xl text-sm flex items-start gap-3 mb-6 shadow-sm">
+                        <i class="fas fa-circle-info mt-0.5 text-blue-500 dark:text-blue-400"></i>
+                        <div>
+                            <p class="font-bold mb-1">Jadwal Harian</p>
+                            <p class="opacity-80 text-xs leading-relaxed">Menampilkan petugas Adzan, Wirid, dan Doa rutin mingguan.</p>
+                        </div>
+                    </div>`;
+                }
+                container.innerHTML = infoHtml + renderDaily(filtered);
+                
+            } else {
+                const filtered = yasinanSchedule.filter(item => 
+                    item.imam.toLowerCase().includes(query) ||
+                    item.tahlil.toLowerCase().includes(query) ||
+                    item.doa.toLowerCase().includes(query) ||
+                    item.date.toLowerCase().includes(query)
+                );
+                
+                let infoHtml = '';
+                if (!query) {
+                    infoHtml = `<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 text-amber-800 dark:text-amber-300 p-4 rounded-2xl text-sm flex items-start gap-3 mb-6 shadow-sm">
+                        <i class="fas fa-star mt-0.5 text-amber-500 dark:text-amber-400"></i>
+                        <div>
+                            <p class="font-bold mb-1">Jadwal Yasinan</p>
+                            <p class="opacity-80 text-xs leading-relaxed">Kegiatan rutin setiap hari Jumat (Des 2025 - Jul 2026).</p>
+                        </div>
+                    </div>`;
+                }
+                container.innerHTML = infoHtml + renderYasinan(filtered);
+            }
+        }
+
+        // Initialize & Scroll to Today
+        updateContent();
+        setTimeout(() => {
+            const todayCard = document.getElementById('today-card') || document.getElementById('today-yasinan-card');
+            if(todayCard) {
+                todayCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 500);
+    </script>
+</body>
+</html>
